@@ -1,0 +1,118 @@
+﻿<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-fee2" role="tabpanel">
+                    <div class="tab-pane fade show active" id="nav-fee2" role="tabpanel">
+                        <table class="table" id="lista_articulos">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        CODIGO
+                                    </th>
+                                    <th>
+                                        NOMBRE
+                                    </th>
+                                    <th>
+                                        PRECIO
+                                    </th>
+                                    <th>
+                                        IVA (13%)
+                                    </th>
+                                    <th>
+                                        TOTAL
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(Model != null){
+                                    @foreach (var item in Model)
+                                    {
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check" itemid="@item.Codigo"></input></td>
+                                            <td> @item.Codigo </td>
+                                            <td> @item.NombreArticulo </td>
+                                            <td> @item.PrecioArticulo</td>
+                                            <td> @item.AplicarIVA</td>
+                                            <td> @item.PrecioConIVA</td>
+                                        </tr>
+                                    }
+                                    }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <button type="button" id="editarBtn" class="btn btn-warning btn-sm px-3" >
+                    Editar<i class="fas fa-times"></i>
+                </button>
+                <button type="button" id="borrarBtn" class="btn btn-danger btn-sm px-3">
+                    Eliminar<i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("editarBtn").addEventListener("click", function () {
+        var tabla = document.getElementById("lista_articulos");
+        var filas = tabla.getElementsByTagName("tr");
+
+        for (var i = 0; i < filas.length; i++) {
+            var checkbox = filas[i].getElementsByTagName("input")[0];
+            if (checkbox && checkbox.checked) {
+                var Codigo = filas[i].cells[0].textContent;
+                var NombreAticulo = filas[i].cells[1].textContent;
+                var precio = filas[i].cells[2].textContent;
+                var iva = filas[i].cells[3].textContent;
+                var total = filas[i].cells[4].textContent;
+
+                editarObjeto(Codigo, NombreAticulo, precio, iva, total);
+                return;
+            }
+        }
+    });
+
+    document.getElementById("borrarBtn").addEventListener("click", function () {
+        var tabla = document.getElementById("lista_articulos");
+        var filas = tabla.getElementsByTagName("tr");
+
+        for (var i = 0; i < filas.length; i++) {
+            var checkbox = filas[i].getElementsByTagName("input")[0];
+            if (checkbox && checkbox.checked) {
+                var Codigo = filas[i].cells[0].textContent;
+
+                borrarObjeto(Codigo);
+                return;
+            }
+        }
+    });
+
+    function borrarObjeto(id) {
+        $.ajax({
+            type: "DELETE",
+            url: "/Shopping/Eliminar",
+            data: { Codigo: id },
+            success: function (response) {
+                alert("Articulo eliminado correctamente.");
+            },
+            error: function (xhr, status, error) {
+                alert("Error al eliminar el articulo.");
+            }
+        });
+    }
+
+    function editarObjeto(id, nombre, precio, iva, total) {
+        // $.ajax({
+        //     type: "POST",
+        //     url: "/Shopping/EditarArticulo",
+        //     data: { Codigo: id, NombreAticulo: nombre, PrecioArticulo: precio, AplicarIVA: iva, PrecioConIVA¨: total  },
+        //     success: function (response) {
+        //         alert("Articulo editado correctamente.");
+        //     },
+        //     error: function (xhr, status, error) {
+        //         alert("Error al editar el articulo.");
+        //     }
+        // });
+    }
+</script>
